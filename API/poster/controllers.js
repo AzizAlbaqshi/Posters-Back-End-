@@ -1,9 +1,15 @@
-let posters = require("../../posters");
 const slugify = require("slugify");
+const { Poster } = require("../../db/models");
 
-exports.posterFetch = (req, res) => {
-  //JSON
-  res.json(posters);
+exports.posterFetch = async (req, res) => {
+  try {
+    const posters = await Poster.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+    res.json(posters);
+  } catch (error) {
+    res.status(500);
+  }
 };
 
 exports.posterDelete = (req, res) => {
