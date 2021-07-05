@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const { json } = require("express");
 const bodyParser = require("body-parser");
 const posterRoutes = require("./API/poster/routes");
+const db = require("./db/models");
 
 const app = express();
 
@@ -11,7 +11,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/posters", posterRoutes);
-const db = require("./db/models");
 
 const run = async () => {
   try {

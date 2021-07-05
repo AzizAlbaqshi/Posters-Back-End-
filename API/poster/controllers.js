@@ -8,7 +8,7 @@ exports.posterFetch = async (req, res) => {
     });
     res.json(posters);
   } catch (error) {
-    res.status(500);
+    res.status(500).json({ message: error.message });
   }
 };
 
