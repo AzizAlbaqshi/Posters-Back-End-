@@ -12,37 +12,42 @@ exports.posterFetch = async (req, res) => {
   }
 };
 
-exports.posterDelete = (req, res) => {
+exports.posterDelete = async (req, res) => {
   const { posterId } = req.params;
-  const foundPoster = posters.find((poster) => poster.id === +posterId);
-  if (foundPoster) {
-    posters = posters.filter((poster) => poster.id !== +posterId);
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Poster not Found." });
+  try {
+    const foundPoster = await Poster.findByPk(posterId);
+    if (foundPoster) {
+      await foundPoster.destroy();
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: "Poster not Found." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-exports.posterCreate = (req, res) => {
-  const id = posters.length + 1;
-  const slug = slugify(req.body.name, { lower: true });
-  const newPoster = {
-    id,
-    slug,
-    ...req.body,
-  };
-  posters.push(newPoster);
-  res.status(201).json(newPoster);
+exports.posterCreate = async (req, res) => {
+  try {
+    const newPoster = await Poster.create(req.body);
+
+    res.status(201).json(newPoster);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-exports.posterUpdate = (req, res) => {
+exports.posterUpdate = async (req, res) => {
   const { posterId } = req.params;
-  const foundPoster = posters.find((poster) => poster.id === +posterId);
-  if (foundPoster) {
-    for (const key in req.body) foundPoster[key] = req.body[key];
-    foundPoster.slug = slugify(foundPoster.name, { lower: true });
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Poster not Found." });
+  try {
+    const foundPoster = await Poster.findByPk(posterId);
+    if (foundPoster) {
+      await foundPoster.update(req.body);
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: "Poster not Found." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
