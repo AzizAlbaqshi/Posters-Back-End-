@@ -1,53 +1,46 @@
 const slugify = require("slugify");
 const { Poster } = require("../../db/models");
 
-exports.posterFetch = async (req, res) => {
+//Fetch
+exports.posterFetch = async (req, res, next) => {
   try {
     const posters = await Poster.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
     });
     res.json(posters);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-exports.posterDelete = async (req, res) => {
-  const { posterId } = req.params;
+//Delete
+exports.posterDelete = async (req, res, next) => {
   try {
-    const foundPoster = await Poster.findByPk(posterId);
-    if (foundPoster) {
-      await foundPoster.destroy();
-      res.status(204).end();
-    } else {
-      res.status(404).json({ message: "Poster not Found." });
-    }
+    await req.poster.destroy();
+    res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-exports.posterCreate = async (req, res) => {
+//Create
+exports.posterCreate = async (req, res, next) => {
   try {
+    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
     const newPoster = await Poster.create(req.body);
-
     res.status(201).json(newPoster);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-exports.posterUpdate = async (req, res) => {
-  const { posterId } = req.params;
+//Update
+exports.posterUpdate = async (req, res, next) => {
   try {
-    const foundPoster = await Poster.findByPk(posterId);
-    if (foundPoster) {
-      await foundPoster.update(req.body);
-      res.status(204).end();
-    } else {
-      res.status(404).json({ message: "Poster not Found." });
-    }
+    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
+    await req.poster.update(req.body);
+    res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };

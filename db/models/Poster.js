@@ -2,7 +2,7 @@ const sequelizeSlugify = require("sequelize-Slugify");
 
 module.exports = (sequelize, DataTypes) => {
   const Poster = sequelize.define("Poster", {
-    name: { type: DataTypes.STRING, allowNull: false },
+    name: { type: DataTypes.STRING, allowNull: false, unique: true },
     price: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     image: { type: DataTypes.STRING },
     slug: {
       type: DataTypes.STRING,
-      unique: true,
     },
   });
 
