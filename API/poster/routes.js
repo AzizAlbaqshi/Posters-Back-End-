@@ -26,7 +26,7 @@ router.param("posterId", async (req, res, next, posterId) => {
 
 //multer
 const storage = multer.diskStorage({
-  destination: "./media",
+  destination: "./media", //path from app.js not from routes
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}${file.originalname}`);
   },
@@ -44,6 +44,6 @@ router.delete("/:posterId", deletePoster);
 router.put("/:posterId", upload.single("image"), updatePoster);
 
 //create
-router.post("/", createPoster);
+router.post("/", upload.single("image"), createPoster);
 
 module.exports = router;

@@ -34,6 +34,7 @@ exports.deletePoster = async (req, res, next) => {
 //Update
 exports.updatePoster = async (req, res, next) => {
   try {
+    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
     await req.poster.update(req.body);
     res.status(204).end();
   } catch (error) {
@@ -44,6 +45,7 @@ exports.updatePoster = async (req, res, next) => {
 //Create
 exports.createPoster = async (req, res, next) => {
   try {
+    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
     const newPoster = await Poster.create(req.body);
     res.status(201).json(newPoster);
   } catch (error) {
