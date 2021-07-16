@@ -1,5 +1,13 @@
-const slugify = require("slugify");
 const { Poster } = require("../../db/models");
+
+exports.fetchPoster = async (posterId, next) => {
+  try {
+    const poster = await Poster.findByPk(posterId);
+    return poster;
+  } catch (error) {
+    next(error);
+  }
+};
 
 //Fetch
 exports.posterFetch = async (req, res, next) => {
@@ -14,7 +22,7 @@ exports.posterFetch = async (req, res, next) => {
 };
 
 //Delete
-exports.posterDelete = async (req, res, next) => {
+exports.deletePoster = async (req, res, next) => {
   try {
     await req.poster.destroy();
     res.status(204).end();
@@ -23,23 +31,21 @@ exports.posterDelete = async (req, res, next) => {
   }
 };
 
-//Create
-exports.posterCreate = async (req, res, next) => {
+//Update
+exports.updatePoster = async (req, res, next) => {
   try {
-    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
-    const newPoster = await Poster.create(req.body);
-    res.status(201).json(newPoster);
+    await req.poster.update(req.body);
+    res.status(204).end();
   } catch (error) {
     next(error);
   }
 };
 
-//Update
-exports.posterUpdate = async (req, res, next) => {
+//Create
+exports.createPoster = async (req, res, next) => {
   try {
-    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
-    await req.poster.update(req.body);
-    res.status(204).end();
+    const newPoster = await Poster.create(req.body);
+    res.status(201).json(newPoster);
   } catch (error) {
     next(error);
   }

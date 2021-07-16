@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     image: { type: DataTypes.STRING },
     slug: {
       type: DataTypes.STRING,
+      unique: true,
     },
   });
 

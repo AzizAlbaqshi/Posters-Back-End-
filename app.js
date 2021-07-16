@@ -2,20 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const posterRoutes = require("./API/poster/routes");
-const db = require("./db/models");
+//const storeRoutes = require("./API/store/routes");
 
+//database
+const db = require("./db/models");
 const app = express();
 
 //Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use((req, res, next) => {
-  console.log("TEST MIDDLEWARE");
-  next();
-});
 
 // Poster Routes
 app.use("/posters", posterRoutes);
+//app.use("/stores", storeRoutes);
 
 // static method will save medias as a files
 app.use("/media", express.static("media"));
