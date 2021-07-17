@@ -44,6 +44,14 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 //modal Relationships
-db.Store.hasMany(db.Poster);
+db.Store.hasMany(db.Poster, {
+  foreignKey: "storeId",
+  allowNull: false,
+  as: "posters",
+});
+db.Poster.belongsTo(db.Store, {
+  as: "store",
+  foreignKey: "storeId",
+});
 
 module.exports = db;

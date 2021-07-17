@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const posterRoutes = require("./API/poster/routes");
-//const storeRoutes = require("./API/store/routes");
+const storeRoutes = require("./API/store/routes");
 
 //database
 const db = require("./db/models");
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 // Poster Routes
 app.use("/posters", posterRoutes);
-//app.use("/stores", storeRoutes);
+app.use("/stores", storeRoutes);
 
 // static method will save medias as a files
 app.use("/media", express.static("media"));

@@ -1,4 +1,4 @@
-const { Poster } = require("../../db/models");
+const { Poster, Store } = require("../../db/models");
 
 exports.fetchPoster = async (posterId, next) => {
   try {
@@ -13,7 +13,12 @@ exports.fetchPoster = async (posterId, next) => {
 exports.posterFetch = async (req, res, next) => {
   try {
     const posters = await Poster.findAll({
-      attributes: { exclude: ["createdAt", "updatedAt"] },
+      attributes: { exclude: ["createdAt", "updatedAt", "storeId"] },
+      include: {
+        model: Store,
+        as: "store",
+        attributes: ["name"],
+      },
     });
     res.json(posters);
   } catch (error) {
@@ -35,19 +40,8 @@ exports.deletePoster = async (req, res, next) => {
 exports.updatePoster = async (req, res, next) => {
   try {
     if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
-    await req.poster.update(req.body);
-    res.status(204).end();
-  } catch (error) {
-    next(error);
-  }
-};
-
-//Create
-exports.createPoster = async (req, res, next) => {
-  try {
-    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
-    const newPoster = await Poster.create(req.body);
-    res.status(201).json(newPoster);
+    const updatedPoster = await req.poster.update(req.body);
+    res.json(updatedPoster);
   } catch (error) {
     next(error);
   }

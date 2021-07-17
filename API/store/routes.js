@@ -1,6 +1,11 @@
 const express = require("express");
 const multer = require("multer");
-const { storeFetch, storeCreate, createPoster } = require("./controllers");
+const {
+  storeFetch,
+  createStore,
+  createPoster,
+  fetchStore,
+} = require("./controllers");
 
 const router = express.Router();
 
@@ -16,7 +21,7 @@ const upload = multer({ storage });
 
 //Parameter
 router.param("storeId", async (req, res, next, storeId) => {
-  const store = await storeFetch(storeId, next);
+  const store = await fetchStore(storeId, next);
   if (store) {
     req.store = store;
     next();
@@ -31,10 +36,9 @@ router.param("storeId", async (req, res, next, storeId) => {
 router.get("/", storeFetch);
 
 //Create Route
-router.post("/", upload.single("image"), storeCreate);
+router.post("/", upload.single("image"), createStore);
 
-//POST
-//Create Route
+//create poster
 router.post("/:storeId/posters", upload.single("image"), createPoster);
 
 module.exports = router;

@@ -4,7 +4,6 @@ const {
   posterFetch,
   updatePoster,
   deletePoster,
-  createPoster,
   fetchPoster,
 } = require("./controllers");
 
@@ -42,8 +41,5 @@ router.delete("/:posterId", deletePoster);
 
 //Update Route
 router.put("/:posterId", upload.single("image"), updatePoster);
-
-//create
-router.post("/", upload.single("image"), createPoster);
 
 module.exports = router;
