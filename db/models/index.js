@@ -54,4 +54,11 @@ db.Poster.belongsTo(db.Store, {
   foreignKey: "storeId",
 });
 
+db.User.hasOne(db.Store, {
+  as: "store",
+  foreignKey: "userId",
+});
+
+db.Store.belongsTo(db.User, { as: "user" });
+
 module.exports = db;

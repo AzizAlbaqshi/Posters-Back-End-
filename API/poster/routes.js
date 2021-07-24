@@ -8,6 +8,7 @@ const {
 } = require("./controllers");
 
 const multer = require("multer");
+const passport = require("passport");
 const router = express.Router(); // import router method from express
 
 //Parameter
@@ -30,16 +31,24 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}${file.originalname}`);
   },
 });
-
 const upload = multer({ storage });
 
 //Fetch Route
 router.get("/", posterFetch);
 
 //Delete Route
-router.delete("/:posterId", deletePoster);
+router.delete(
+  "/:posterId",
+  passport.authenticate("jwt", { session: false }),
+  deletePoster
+);
 
 //Update Route
-router.put("/:posterId", upload.single("image"), updatePoster);
+router.put(
+  "/:posterId",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("image"),
+  updatePoster
+);
 
 module.exports = router;

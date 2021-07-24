@@ -28,9 +28,16 @@ exports.posterFetch = async (req, res, next) => {
 
 //Delete
 exports.deletePoster = async (req, res, next) => {
+  const foundStore = await Store.findByPk(req.poster.posterId);
   try {
-    await req.poster.destroy();
-    res.status(204).end();
+    if (foundStore.userId === req.user.id) {
+      await req.poster.destroy();
+      res.status(204).end(); // no content
+    } else {
+      const err = new Error("Unauthorized!");
+      err.status = 401;
+      return next(err);
+    }
   } catch (error) {
     next(error);
   }
@@ -38,10 +45,18 @@ exports.deletePoster = async (req, res, next) => {
 
 //Update
 exports.updatePoster = async (req, res, next) => {
+  const foundStore = await Store.findByPk(req.poster.storeId);
   try {
-    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
-    const updatedPoster = await req.poster.update(req.body);
-    res.json(updatedPoster);
+    if (foundStore.userId === req.user.id) {
+      if (req.file)
+        req.body.image = `http://${req.get("host")}/${req.file.path}`;
+      const updatedPoster = await req.poster.update(req.body);
+      res.json(updatedPoster);
+    } else {
+      const err = new Error("Unauthorized!");
+      err.status = 401;
+      return next(err);
+    }
   } catch (error) {
     next(error);
   }

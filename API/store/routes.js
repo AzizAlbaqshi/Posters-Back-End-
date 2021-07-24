@@ -1,10 +1,12 @@
 const express = require("express");
 const multer = require("multer");
+const passport = require("passport");
 const {
   storeFetch,
   createStore,
   createPoster,
   fetchStore,
+  deleteStore,
 } = require("./controllers");
 
 const router = express.Router();
@@ -36,9 +38,22 @@ router.param("storeId", async (req, res, next, storeId) => {
 router.get("/", storeFetch);
 
 //Create Route
-router.post("/", upload.single("image"), createStore);
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("image"),
+  createStore
+);
 
 //create poster
-router.post("/:storeId/posters", upload.single("image"), createPoster);
+router.post(
+  "/:storeId/posters",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("image"),
+  createPoster
+);
+
+//Delete Route
+router.delete("/:storeId", deleteStore);
 
 module.exports = router;
